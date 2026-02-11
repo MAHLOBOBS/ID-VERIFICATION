@@ -37,7 +37,7 @@ function getDataFromInput(){ // gets data from input
      
      console.log(`date of birth is :'${data.year}/${data.month}/${data.day} and is a : ${data.gender}`);
 
-     data.starSign=getZodiacByMonth(data.month, data.day);
+     data.starSign=getZodiacByMonth(Number(data.month), Number(data.day));
 
      data.age=getAge();
      validateId(idNumber);
@@ -296,5 +296,6 @@ function displayData(){
    }
 
 }
+
 
 
