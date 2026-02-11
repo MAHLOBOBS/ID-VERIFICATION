@@ -22,12 +22,37 @@ birthday:''
 
 
 
-function getDataFromInput(){ // gets data from input
+function EnterEventListener(){ // gets data from input
+   
+   const btn=document.querySelector('.btn-js');
+   const inputElement =document.querySelector('.input-js');
 
+   btn.addEventListener('click',()=>{
+
+     processData();
+
+   });
+
+  inputElement.addEventListener('keydown', (event) => {
+  if(event.key==='Enter'){
+    processData();
+
+  }
+    
+  });
+
+  
+  
+  
+}
+
+function processData(){
+
+  
   const btn=document.querySelector('.btn-js'); // calling a button
   const inputElement =document.querySelector('.input-js'); // getting inputbox data
 
-  btn.addEventListener('click',()=>{
+ 
 
    input=inputElement.value;
 
@@ -61,12 +86,12 @@ function getDataFromInput(){ // gets data from input
      
   
      
-  });
   
-  
+
 }
 
-getDataFromInput();
+
+
 
 
 function extractData(){
@@ -317,5 +342,4 @@ function displayData(){
 
 
 
-
-
+EnterEventListener();
