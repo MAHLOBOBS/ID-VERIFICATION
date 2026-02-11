@@ -295,6 +295,7 @@ function displayData(){
     birthdayElement.style.color="";
    }
 
+
    const genderElement=document.querySelector('.gender-js');
 
     genderElement.innerHTML=data.gender;
@@ -312,8 +313,6 @@ function displayData(){
 
       genderElement.style.color='';
     }
-}
-
 }
 
 
