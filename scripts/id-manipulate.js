@@ -295,7 +295,27 @@ function displayData(){
     birthdayElement.style.color="";
    }
 
+   const genderElement=document.querySelector('.gender-js');
+
+    genderElement.innerHTML=data.gender;
+
+    if(data.gender==='NONE'){
+
+    genderElement.style.color='black';
+
+    }
+    else if(data.gender!=='NONE'){
+
+      genderElement.style.color='#ff8411';
+    }
+    else{
+
+      genderElement.style.color='';
+    }
 }
+
+}
+
 
 
 
