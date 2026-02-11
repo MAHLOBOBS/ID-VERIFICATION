@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Verification & Zodiac Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link  rel="stylesheet"  href="/styles/home-styles.css">
+   
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-id-card"></i>
+            </div>
+            <h1>ID Verification System</h1>
+            <p class="subtitle">Verify identity numbers, find zodiac signs, and calculate next birthday dates with our secure validation system.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-user-check"></i> Identity Verification</h2>
+                <div class="input-group">
+                    <label for="id-number">Enter ID Number</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-badge"></i>
+                        <input type="text" id="id-number" placeholder="8501015263083" maxlength="13" class="input-js">
+                    </div>
+                    <p class="hint">Enter 13-digit South African ID (no spaces)</p>
+                </div>
+                
+                <button id="verify-btn" class="btn  btn-js">
+                    <i class="fas fa-shield-alt"></i> Verify Identity
+                </button>
+                
+                <div class="loader" id="loader"></div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-star-and-crescent"></i> Live Results Preview</h2>
+                
+                <!-- UPDATED FEATURES RESULTS - SHOWING DEFAULT VALUES -->
+                <div class="features-container">
+                    <div class="features-results">
+                        <div class="feature-result-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <div class="feature-value validation-js">NONE</div>
+                            <div class="feature-label">ID Validation</div>
+                        </div>
+                        
+                        <div class="feature-result-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="feature-value star-sign-js">NONE</div>
+                            <div class="feature-label">Star Sign</div>
+                        </div>
+                        
+                        <div class="feature-result-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-birthday-cake"></i>
+                            </div>
+                            <div class="feature-value birthday-js">NONE</div>
+                            <div class="feature-label">Date of birth</div>
+                        </div>
+                        
+                        <div class="feature-result-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="feature-value age-js">NONE</div>
+                            <div class="feature-label">Age</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="result-card" class="result-card">
+            <div class="result-header">
+                <h3 class="result-title">Detailed Verification Results</h3>
+                <div id="status" class="status">Processing...</div>
+            </div>
+            
+            <div class="result-content">
+                <div class="info-box">
+                    <div class="info-label">ID Number</div>
+                    <div id="result-id" class="info-value">-</div>
+                </div>
+                
+                <div class="info-box">
+                    <div class="info-label">Date of Birth</div>
+                    <div id="result-dob" class="info-value">-</div>
+                </div>
+                
+                <div class="info-box">
+                    <div class="info-label">Age</div>
+                    <div id="result-age" class="info-value">-</div>
+                </div>
+                
+                <div class="info-box">
+                    <div class="info-label">Gender</div>
+                    <div id="result-gender" class="info-value">-</div>
+                </div>
+                
+                <div class="info-box">
+                    <div class="info-label">Citizenship</div>
+                    <div id="result-citizen" class="info-value">-</div>
+                </div>
+                
+                <div class="info-box">
+                    <div class="info-label">Zodiac Sign</div>
+                    <div class="zodiac-display">
+                        <div id="zodiac-icon" class="zodiac-icon">♈</div>
+                        <div id="zodiac-name" class="zodiac-name">-</div>
+                        <div id="zodiac-date" class="zodiac-date">-</div>
+                    </div>
+                </div>
+                
+                <div class="info-box" style="grid-column: span 2;">
+                    <div class="info-label">Next Birthday</div>
+                    <div class="next-birthday">
+                        <i class="fas fa-birthday-cake"></i>
+                        <div>
+                            <div id="next-bday" class="date-display">-</div>
+                            <div id="days-away" class="days-away">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>ID Verification System © 2026 | banele mahlobo</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">Professional client-side validation for banele  IT systems</p>
+        </footer>
+    </div>
+
+    <script src="/scripts/id-manipulate.js" type="module">
+        
+    </script>
+</body>
+</html>
