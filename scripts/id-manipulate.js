@@ -94,7 +94,7 @@ let currentYear=new Date().getFullYear();
   }
 
   data.month=Number(`${idNumber[2]}`+`${idNumber[3]}`).toString().padStart(2, '0');
-  data.day=Number(`${idNumber[4]}`+`${idNumber[5]}`);
+  data.day=Number(`${idNumber[4]}`+`${idNumber[5]}`).toString().padStart(2, '0');
 
  data.birthday=`${data.year}/${data.month}/${data.day}`
 
@@ -314,6 +314,7 @@ function displayData(){
       genderElement.style.color='';
     }
 }
+
 
 
 
