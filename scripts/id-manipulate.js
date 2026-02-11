@@ -22,29 +22,34 @@ birthday:''
 
 
 
-function EnterEventListener(){ // gets data from input
+function EventListener(){ // gets data from input
    
    const btn=document.querySelector('.btn-js');
    const inputElement =document.querySelector('.input-js');
 
    btn.addEventListener('click',()=>{
-
      processData();
-
+     generateHTML();
    });
 
-  inputElement.addEventListener('keydown', (event) => {
-  if(event.key==='Enter'){
-    processData();
-
-  }
-    
-  });
-
-  
-  
-  
+   inputElement.addEventListener('keydown', (event) => {
+     if(event.key==='Enter'){
+       processData();
+       generateHTML();
+     }
+   });
+   
+   // EVENT DELEGATION - This works for dynamically added buttons
+   document.addEventListener('click', async (e) => {
+     const downloadBtn = e.target.closest('#download-btn');
+     if (downloadBtn) {
+       e.preventDefault();
+       await generateCertificate();
+     }
+   });
 }
+
+generateHTML();
 
 function processData(){
 
@@ -342,4 +347,450 @@ function displayData(){
 
 
 
-EnterEventListener();
+
+        
+          function generateHTML(){
+
+            
+
+
+            let card=document.querySelector('.card-js');
+
+            const currentInput = document.querySelector('.input-js')?.value || '';
+
+            if(data.validation==='VALID'){
+
+                card.innerHTML=`<div class="card card-js">
+                <h2 class="card-title"><i class="fas fa-user-check"></i> Identity Verification</h2>
+                <div class="input-group">
+                    <label for="id-number">Enter ID Number</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-badge"></i>
+                        <input type="text" id="id-number" placeholder="8501015263083" maxlength="13" class="input-js" value="${currentInput}">
+                    </div>
+                    <p class="hint">Enter 13-digit South African ID (no spaces)</p>
+                </div>
+                
+                <button id="verify-btn" class="btn  btn-js">
+                    <i class="fas fa-shield-alt"></i> Verify Identity
+                </button>
+                
+                <div class="loader" id="loader"></div>
+
+
+                
+                <button id="download-btn" class="downloadBtn btn-js">
+                <i class="fas fa-download"></i> Download Verification Certificate
+                </button>
+            </div>`
+
+            EventListener();
+
+            }
+             
+            else{
+
+
+              card.innerHTML= `<div class="card card-js">
+                <h2 class="card-title"><i class="fas fa-user-check"></i> Identity Verification</h2>
+                <div class="input-group">
+                    <label for="id-number">Enter ID Number</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-badge"></i>
+                        <input type="text" id="id-number" placeholder="8501015263083" maxlength="13" class="input-js" value="${currentInput}">
+                    </div>
+                    <p class="hint">Enter 13-digit South African ID (no spaces)</p>
+                </div>
+                
+                <button id="verify-btn" class="btn  btn-js">
+                    <i class="fas fa-shield-alt"></i> Verify Identity
+                </button>
+                
+                <div class="loader" id="loader"></div>
+            </div>`
+
+               EventListener();
+            }
+
+            
+            
+}
+
+
+async function generateCertificate() {
+
+    // Check if PDFLib is loaded
+    if (typeof PDFLib === 'undefined') {
+        alert('PDF library not loaded. Please check your internet connection and refresh the page.');
+        console.error('PDFLib is not defined. Make sure the script is loaded.');
+        return;
+    } 
+
+    // Only generate if validation is VALID
+    if (data.validation !== 'VALID') {
+        alert('Cannot generate certificate: Invalid ID number');
+        return;
+    }
+
+    try {
+        // Show loading state on button
+        const downloadBtn = document.querySelector('#download-btn');
+        if (!downloadBtn) {
+            console.error('Download button not found');
+            return;
+        }
+
+        const originalText = downloadBtn.innerHTML;
+        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Certificate...';
+        downloadBtn.disabled = true;
+
+        // Create a new PDF document
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+        const pdfDoc = await PDFDocument.create();
+
+        // Add a page (increased height for better spacing)
+        const page = pdfDoc.addPage([600, 450]);
+
+        // Embed fonts
+        const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+        const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+        // ============ FORMAL CERTIFICATE FRAME ============
+        // Outer border
+        page.drawRectangle({
+            x: 25,
+            y: 25,
+            width: 550,
+            height: 400,
+            borderColor: rgb(0.2, 0.3, 0.6),
+            borderWidth: 1.5,
+            color: rgb(1, 1, 1)
+        });
+
+        // Inner decorative border
+        page.drawRectangle({
+            x: 30,
+            y: 30,
+            width: 540,
+            height: 390,
+            borderColor: rgb(0.8, 0.8, 0.8),
+            borderWidth: 0.5,
+            color: rgb(1, 1, 1)
+        });
+
+        // Header separator
+        page.drawLine({
+            start: { x: 50, y: 380 },
+            end: { x: 550, y: 380 },
+            thickness: 0.5,
+            color: rgb(0.6, 0.6, 0.6)
+        });
+
+        // ============ HEADER SECTION ============
+        // Main Title
+        page.drawText('REPUBLIC OF SOUTH AFRICA', {
+            x: 170,
+            y: 407,
+            size: 14,
+            font: helveticaBold,
+            color: rgb(0.2, 0.3, 0.6)
+        });
+
+        // Certificate Title
+        page.drawText('VERIFICATION CERTIFICATE', {
+            x: 160,
+            y: 385,
+            size: 20,
+            font: helveticaBold,
+            color: rgb(0, 0, 0)
+        });
+
+        // Subtitle
+        page.drawText('Identity Document Validation', {
+            x: 210,
+            y: 365,
+            size: 12,
+            font: helvetica,
+            color: rgb(0.4, 0.4, 0.4)
+        });
+
+        // ============ CONTENT SECTION ============
+        // Certification statement
+        page.drawText('This is to certify that the following identity document', {
+            x: 150,
+            y: 320,
+            size: 11,
+            font: helvetica,
+            color: rgb(0.2, 0.2, 0.2)
+        });
+
+        page.drawText('has been verified through the official verification system:', {
+            x: 140,
+            y: 300,
+            size: 11,
+            font: helvetica,
+            color: rgb(0.2, 0.2, 0.2)
+        });
+
+        // ID Number (prominently displayed)
+        page.drawText(input, {
+            x: 200,
+            y: 260,
+            size: 18,
+            font: helveticaBold,
+            color: rgb(0, 0, 0.6)
+        });
+
+        // ============ DETAILS CARD ============
+        // Background for details
+        page.drawRectangle({
+            x: 80,
+            y: 137,
+            width: 240,
+            height: 100,
+            borderColor: rgb(0.9, 0.9, 0.9),
+            borderWidth: 0.5,
+            color: rgb(0.98, 0.98, 0.98)
+        });
+
+        // Details Header
+        page.drawText('IDENTITY DETAILS', {
+            x: 100,
+            y: 225,
+            size: 10,
+            font: helveticaBold,
+            color: rgb(0.4, 0.4, 0.4)
+        });
+
+        // Status
+        page.drawText('Verification Status:', {
+            x: 100,
+            y: 200,
+            size: 10,
+            font: helvetica,
+            color: rgb(0.4, 0.4, 0.4)
+        });
+
+        const statusColor = rgb(0, 0.5, 0);
+        page.drawText(`${data.validation}`, {
+            x: 200,
+            y: 200,
+            size: 10,
+            font: helveticaBold,
+            color: statusColor
+        });
+
+        // Date of Birth
+        page.drawText('Date of Birth:', {
+            x: 100,
+            y: 180,
+            size: 10,
+            font: helvetica,
+            color: rgb(0.4, 0.4, 0.4)
+        });
+
+        page.drawText(`${data.birthday}`, {
+            x: 200,
+            y: 180,
+            size: 10,
+            font: helvetica,
+            color: rgb(0, 0, 0)
+        });
+
+        // Gender
+        page.drawText('Gender:', {
+            x: 100,
+            y: 160,
+            size: 10,
+            font: helvetica,
+            color: rgb(0.4, 0.4, 0.4)
+        });
+
+        page.drawText(`${data.gender}`, {
+            x: 200,
+            y: 160,
+            size: 10,
+            font: helvetica,
+            color: rgb(0, 0, 0)
+        });
+
+        // Age
+        page.drawText('Age:', {
+            x: 100,
+            y: 140,
+            size: 10,
+            font: helvetica,
+            color: rgb(0.4, 0.4, 0.4)
+        });
+
+        page.drawText(`${data.age} years`, {
+            x: 200,
+            y: 140,
+            size: 10,
+            font: helvetica,
+            color: rgb(0, 0, 0)
+        });
+
+        // ============ STAR SIGN SECTION ============
+        page.drawText('Star Sign:', {
+            x: 350,
+            y: 200,
+            size: 10,
+            font: helvetica,
+            color: rgb(0.4, 0.4, 0.4)
+        });
+
+        page.drawText(`${data.starSign}`, {
+            x: 410,
+            y: 200,
+            size: 10,
+            font: helveticaBold,
+            color: rgb(0.6, 0.4, 0.1)
+        });
+
+        // ============ OFFICIAL STAMP SECTION ============
+        // Positioned in top-right corner, away from footer
+        if (data.validation === 'VALID') {
+            // Official seal circle
+            page.drawCircle({
+                x: 500,
+                y: 310,
+                size: 45,
+                borderWidth: 2,
+                borderColor: rgb(0, 0.4, 0),
+                color: rgb(1, 1, 1)
+            });
+
+            // Inner circle for seal effect
+            page.drawCircle({
+                x: 500,
+                y: 310,
+                size: 42,
+                borderWidth: 0.5,
+                borderColor: rgb(0.8, 0.8, 0.8),
+                color: rgb(1, 1, 1)
+            });
+
+            // APPROVED text
+            page.drawText('APPROVED', {
+                x: 470,
+                y: 315,
+                size: 12,
+                font: helveticaBold,
+                color: rgb(0, 0.4, 0)
+            });
+
+            // Official stamp text
+            page.drawText('OFFICIAL', {
+                x: 476,
+                y: 300,
+                size: 8,
+                font: helvetica,
+                color: rgb(0.4, 0.4, 0.4)
+            });
+
+            // VERIFIED stamp
+            page.drawText('VERIFIED', {
+                x: 475,
+                y: 280,
+                size: 10,
+                font: helveticaBold,
+                color: rgb(0, 0.5, 0)
+            });
+        }
+
+        // ============ OFFICIAL SIGNATURE SECTION ============
+        page.drawLine({
+            start: { x: 80, y: 100 },
+            end: { x: 220, y: 100 },
+            thickness: 0.5,
+            color: rgb(0.2, 0.2, 0.2)
+        });
+
+        page.drawText('Authorised Signature', {
+            x: 100,
+            y: 85,
+            size: 8,
+            font: helvetica,
+            color: rgb(0.4, 0.4, 0.4)
+        });
+
+        // ============ FOOTER SECTION ============
+        // Generation date
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('en-ZA', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        page.drawText(`Certificate Generated: ${dateStr}`, {
+            x: 50,
+            y: 55,
+            size: 9,
+            font: helvetica,
+            color: rgb(0.5, 0.5, 0.5)
+        });
+
+        // Reference number
+        const refNumber = Math.random().toString(36).substring(2, 10).toUpperCase();
+        page.drawText(`Ref: ZA-${refNumber}`, {
+            x: 50,
+            y: 40,
+            size: 8,
+            font: helvetica,
+            color: rgb(0.5, 0.5, 0.5)
+        });
+
+        // System name - repositioned to left side
+        page.drawText('South African ID Verification System', {
+            x: 350,
+            y: 55,
+            size: 9,
+            font: helveticaBold,
+            color: rgb(0.2, 0.3, 0.6)
+        });
+
+        // Page number/version
+        page.drawText('v1.0 • Official Document', {
+            x: 350,
+            y: 40,
+            size: 8,
+            font: helvetica,
+            color: rgb(0.5, 0.5, 0.5)
+        });
+
+        // Save the PDF
+        const pdfBytes = await pdfDoc.save();
+
+        // Create download link
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `SA-ID-Verification-${data.birthday || 'certificate'}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Clean up
+        URL.revokeObjectURL(url);
+
+        // Restore button
+        downloadBtn.innerHTML = originalText;
+        downloadBtn.disabled = false;
+
+        console.log('Formal certificate generated and downloaded successfully!');
+
+    } catch (error) {
+        console.error('Error generating certificate:', error);
+        alert('Error generating certificate: ' + error.message);
+
+        // Restore button
+        const downloadBtn = document.querySelector('#download-btn');
+        if (downloadBtn) {
+            downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Verification Certificate';
+            downloadBtn.disabled = false;
+        }
+    }
+}
